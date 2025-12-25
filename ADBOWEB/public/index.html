@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rick's Music Store | Masterpiece Collection</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700;900&family=Playfair+Display:ital,wght@0,700;1,700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      /* --- VARIABEL DASAR --- */
+      :root {
+        --gold: #d4af37;
+        --gold-light: #f1c40f;
+        --transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      /* --- TEMA GELAP (DEFAULT) --- */
+      [data-theme="dark"] {
+        --bg-body: #050505;
+        --bg-card: #111111;
+        --bg-nav: rgba(5, 5, 5, 0.95);
+        --text-main: #ffffff;
+        --text-muted: #a0a0a0;
+        --border-color: rgba(212, 175, 55, 0.2);
+        --card-shadow: rgba(0, 0, 0, 0.8);
+        --input-bg: #1a1a1a;
+        --spec-bg: rgba(255, 255, 255, 0.05);
+      }
+
+      /* --- TEMA TERANG --- */
+      [data-theme="light"] {
+        --bg-body: #f9f9f9;
+        --bg-card: #ffffff;
+        --bg-nav: rgba(255, 255, 255, 0.95);
+        --text-main: #1a1a1a;
+        --text-muted: #666666;
+        --border-color: #e0e0e0;
+        --card-shadow: rgba(0, 0, 0, 0.05);
+        --input-bg: #f0f0f0;
+        --spec-bg: #f5f5f5;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: "Montserrat", sans-serif;
+        background: var(--bg-body);
+        color: var(--text-main);
+        line-height: 1.6;
+        overflow-x: hidden;
+        transition: background var(--transition), color var(--transition);
+      }
+
+      /* --- NAVIGATION BAR --- */
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 5%;
+        background: var(--bg-nav);
+        backdrop-filter: blur(20px);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .logo-container {
+        display: flex;
+        flex-direction: column;
+        text-decoration: none;
+      }
+      .logo {
+        font-family: "Playfair Display", serif;
+        font-weight: 900;
+        font-size: 24px;
+        color: var(--gold);
+        letter-spacing: 1px;
+      }
+      .logo-sub {
+        font-size: 8px;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        margin-top: -5px;
+      }
+
+      .nav-menu {
+        display: flex;
+        gap: 25px;
+        align-items: center;
+      }
+      .nav-menu a {
+        text-decoration: none;
+        color: var(--text-main);
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        transition: 0.3s;
+        position: relative;
+        cursor: pointer;
+      }
+      .nav-menu a::after {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 1px;
+        bottom: -4px;
+        left: 0;
+        background: var(--gold);
+        transition: 0.3s;
+      }
+      .nav-menu a:hover::after {
+        width: 100%;
+      }
+      .nav-menu a:hover {
+        color: var(--gold);
+      }
+
+      .nav-actions {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .theme-toggle {
+        background: var(--input-bg);
+        border: 1px solid var(--border-color);
+        color: var(--gold);
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: 0.3s;
+      }
+
+      /* --- SEARCH & FILTER BAR --- */
+      .search-container {
+        background: var(--bg-card);
+        padding: 20px 5%;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+        align-items: center;
+      }
+      .search-box {
+        position: relative;
+        flex: 1;
+        max-width: 500px;
+      }
+      .search-box input {
+        width: 100%;
+        padding: 12px 20px 12px 45px;
+        background: var(--input-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 30px;
+        color: var(--text-main);
+        font-family: inherit;
+        outline: none;
+        transition: 0.3s;
+      }
+      .search-box input:focus {
+        border-color: var(--gold);
+      }
+      .search-box i {
+        position: absolute;
+        left: 18px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--gold);
+      }
+      .filter-group {
+        display: flex;
+        gap: 10px;
+      }
+      .filter-group select {
+        padding: 10px 15px;
+        background: var(--input-bg);
+        border: 1px solid var(--border-color);
+        color: var(--text-main);
+        border-radius: 5px;
+        outline: none;
+        cursor: pointer;
+      }
+
+      /* --- HERO SECTION --- */
+      .hero {
+        height: 60vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+          url("https://images.unsplash.com/photo-1510915361894-db8b60106cb1?auto=format&fit=crop&q=80&w=2000");
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        padding: 0 5%;
+      }
+      .hero span {
+        color: var(--gold);
+        letter-spacing: 10px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        margin-bottom: 15px;
+        animation: fadeInDown 1s ease;
+      }
+      .hero h1 {
+        font-family: "Playfair Display", serif;
+        font-size: clamp(40px, 8vw, 75px);
+        color: #fff;
+        font-style: italic;
+        margin-bottom: 10px;
+        animation: fadeInUp 1s ease;
+      }
+      .hero p {
+        color: #f0f0f0;
+        max-width: 700px;
+        font-weight: 300;
+        font-size: 18px;
+        animation: fadeIn 2s ease;
+      }
+
+      /* --- PRODUCT GRID --- */
+      .container {
+        padding: 60px 5%;
+        max-width: 1440px;
+        margin: 0 auto;
+        min-height: 500px;
+      }
+      .section-title {
+        text-align: center;
+        margin-bottom: 60px;
+      }
+      .section-title h2 {
+        font-family: "Playfair Display", serif;
+        font-size: 32px;
+        letter-spacing: 2px;
+      }
+      .section-title .line {
+        width: 50px;
+        height: 2px;
+        background: var(--gold);
+        margin: 15px auto;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+        gap: 40px;
+      }
+
+      /* --- CARD LUXURY --- */
+      .card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        padding: 40px 25px;
+        transition: var(--transition);
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        animation: fadeIn 0.8s ease forwards;
+      }
+      .card:hover {
+        transform: translateY(-10px);
+        border-color: var(--gold);
+        box-shadow: 0 20px 40px var(--card-shadow);
+      }
+
+      .type-badge {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--gold);
+        color: #000;
+        padding: 5px 20px;
+        font-size: 9px;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        z-index: 10;
+      }
+
+      .img-container {
+        height: 350px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 25px;
+        overflow: hidden;
+      }
+      .img-container img {
+        max-height: 100%;
+        transition: 0.6s;
+        filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
+      }
+      .card:hover img {
+        transform: scale(1.1) rotate(-3deg);
+      }
+
+      .builder {
+        color: var(--gold);
+        font-size: 11px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        font-weight: 700;
+        text-align: center;
+      }
+      .model {
+        font-family: "Playfair Display", serif;
+        font-size: 26px;
+        margin: 10px 0;
+        text-align: center;
+      }
+
+      /* --- SPECS TABLE --- */
+      .spec-container {
+        margin: 20px 0;
+        padding: 15px;
+        background: var(--spec-bg);
+        border-radius: 5px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+      }
+      .spec-item {
+        display: flex;
+        flex-direction: column;
+      }
+      .spec-label {
+        font-size: 9px;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        letter-spacing: 1px;
+        margin-bottom: 2px;
+      }
+      .spec-value {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--text-main);
+      }
+
+      .price {
+        font-size: 24px;
+        font-weight: 400;
+        text-align: center;
+        margin-bottom: 25px;
+        color: var(--gold);
+      }
+
+      .btn-wa {
+        text-decoration: none;
+        border: 1px solid var(--gold);
+        color: var(--gold);
+        padding: 15px;
+        text-align: center;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        transition: 0.3s;
+      }
+      .btn-wa:hover {
+        background: var(--gold);
+        color: #000;
+      }
+
+      /* --- FOOTER --- */
+      footer {
+        background: var(--bg-card);
+        padding: 80px 5% 40px;
+        border-top: 1px solid var(--border-color);
+        margin-top: 60px;
+      }
+      .footer-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 60px;
+        max-width: 1440px;
+        margin: 0 auto;
+      }
+      .footer-col h4 {
+        color: var(--gold);
+        text-transform: uppercase;
+        font-size: 13px;
+        letter-spacing: 3px;
+        margin-bottom: 30px;
+      }
+      .footer-col p,
+      .footer-col a {
+        color: var(--text-muted);
+        text-decoration: none;
+        font-size: 14px;
+        margin-bottom: 15px;
+        display: block;
+      }
+      .copyright {
+        text-align: center;
+        margin-top: 80px;
+        padding-top: 30px;
+        border-top: 1px solid var(--border-color);
+        font-size: 10px;
+        color: var(--text-muted);
+        letter-spacing: 2px;
+      }
+
+      /* --- ANIMATIONS --- */
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes fadeInDown {
+        from {
+          opacity: 0;
+          transform: translateY(-30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @media (max-width: 992px) {
+        .nav-menu {
+          display: none;
+        }
+        .hero h1 {
+          font-size: 45px;
+        }
+        .search-container {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body data-theme="dark">
+    <nav>
+      <a href="index.html" class="logo-container">
+        <span class="logo">RICK'S MUSIC</span>
+        <span class="logo-sub">Masterpiece Collection</span>
+      </a>
+
+      <div class="nav-menu">
+        <a onclick="filterByType('all')">All Instruments</a>
+        <a onclick="filterByType('guitar')">Guitars</a>
+        <a onclick="filterByType('mandolin')">Mandolins</a>
+        <a href="#about">Our Story</a>
+        <a href="#contact">Contact</a>
+      </div>
+
+      <div class="nav-actions">
+        <button class="theme-toggle" id="themeBtn" title="Ganti Tema">
+          <i class="fas fa-moon" id="themeIcon"></i>
+        </button>
+      </div>
+    </nav>
+
+    <div class="search-container">
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Search by model, builder, or wood type..."
+          onkeyup="search()"
+        />
+      </div>
+      <div class="filter-group">
+        <select id="builderFilter" onchange="search()">
+          <option value="all">All Builders</option>
+          <option value="Fender">Fender</option>
+          <option value="Gibson">Gibson</option>
+          <option value="Martin">Martin</option>
+          <option value="Taylor">Taylor</option>
+        </select>
+        <select id="priceFilter" onchange="search()">
+          <option value="all">Any Price</option>
+          <option value="0-1000">Under $1,000</option>
+          <option value="1000-2500">$1,000 - $2,500</option>
+          <option value="2500-99999">Above $2,500</option>
+        </select>
+      </div>
+    </div>
+
+    <header class="hero">
+      <span>EST. MCMLXXXIV</span>
+      <h1>Soul & Strings</h1>
+      <p>
+        Precision crafted instruments for the discerning artist. Discover your
+        signature sound in our curated inventory.
+      </p>
+    </header>
+
+    <main class="container">
+      <div class="section-title">
+        <h2 id="catalogTitle">Current Inventory</h2>
+        <div class="line"></div>
+      </div>
+
+      <div id="catalog" class="grid"></div>
+    </main>
+
+    <footer id="about">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>The Boutique</h4>
+          <p>
+            Rick's Music Store is more than a shop; it's a sanctuary for
+            musicians. Since 1984, we've provided the world's finest acoustic
+            and electric instruments.
+          </p>
+        </div>
+        <div class="footer-col" id="contact">
+          <h4>Contact Us</h4>
+          <p>
+            <i class="fab fa-whatsapp" style="color: var(--gold)"></i> +62 821
+            5510 1047
+          </p>
+          <p>
+            <i class="fas fa-map-marker-alt" style="color: var(--gold)"></i>
+            Music District, Jakarta
+          </p>
+          <p>
+            <i class="fas fa-envelope" style="color: var(--gold)"></i>
+            concierge@ricksmusic.com
+          </p>
+        </div>
+        <div class="footer-col">
+          <h4>Follow Us</h4>
+          <a href="#"><i class="fab fa-instagram"></i> Instagram</a>
+          <a href="#"><i class="fab fa-youtube"></i> YouTube</a>
+        </div>
+      </div>
+      <div class="copyright">
+        &copy; 2024 RICK'S MUSIC STORE. SPECS DEFINED PERFECTION.
+      </div>
+    </footer>
+
+    <script>
+      let inventoryData = [];
+
+      // --- THEME SWITCHER ---
+      const themeBtn = document.getElementById("themeBtn");
+      const themeIcon = document.getElementById("themeIcon");
+      const body = document.body;
+
+      const savedTheme = localStorage.getItem("theme") || "dark";
+      body.setAttribute("data-theme", savedTheme);
+      updateThemeIcon(savedTheme);
+
+      themeBtn.addEventListener("click", () => {
+        const currentTheme = body.getAttribute("data-theme");
+        const newTheme = currentTheme === "dark" ? "light" : "dark";
+        body.setAttribute("data-theme", newTheme);
+        localStorage.setItem("theme", newTheme);
+        updateThemeIcon(newTheme);
+      });
+
+      function updateThemeIcon(theme) {
+        themeIcon.className = theme === "dark" ? "fas fa-moon" : "fas fa-sun";
+      }
+
+      // --- FETCH DATA ---
+      async function fetchInventory() {
+        try {
+          const response = await fetch("/api/inventory");
+          inventoryData = await response.json();
+          render(inventoryData);
+        } catch (error) {
+          console.error("Gagal mengambil data:", error);
+          document.getElementById("catalog").innerHTML =
+            "<p style='text-align:center; grid-column: 1/-1;'>Database connection lost. Please ensure the server is running.</p>";
+        }
+      }
+
+      // --- SEARCH & FILTER LOGIC ---
+      function search() {
+        const query = document
+          .getElementById("searchInput")
+          .value.toLowerCase();
+        const builder = document.getElementById("builderFilter").value;
+        const priceRange = document.getElementById("priceFilter").value;
+
+        const filtered = inventoryData.filter((item) => {
+          const spec = item.spec;
+          const matchesSearch =
+            spec.model.toLowerCase().includes(query) ||
+            spec.builder.toLowerCase().includes(query) ||
+            spec.topWood.toLowerCase().includes(query);
+
+          const matchesBuilder = builder === "all" || spec.builder === builder;
+
+          let matchesPrice = true;
+          if (priceRange !== "all") {
+            const [min, max] = priceRange.split("-").map(Number);
+            matchesPrice = item.price >= min && item.price <= max;
+          }
+
+          return matchesSearch && matchesBuilder && matchesPrice;
+        });
+
+        render(filtered);
+      }
+
+      function filterByType(type) {
+        document.getElementById("catalogTitle").innerText =
+          type === "all"
+            ? "Current Inventory"
+            : type === "guitar"
+            ? "Acoustic Guitars"
+            : "Exclusive Mandolins";
+
+        if (type === "all") {
+          render(inventoryData);
+        } else {
+          const filtered = inventoryData.filter((item) => {
+            const isGuitar = item.spec.numStrings !== undefined;
+            return type === "guitar" ? isGuitar : !isGuitar;
+          });
+          render(filtered);
+        }
+        window.location.hash = "catalog";
+      }
+
+      // --- RENDER FUNCTION ---
+      function render(data) {
+        const grid = document.getElementById("catalog");
+        if (!data || data.length === 0) {
+          grid.innerHTML =
+            "<p style='text-align:center; grid-column: 1/-1; padding: 50px; color: var(--text-muted);'>No instruments found matching your criteria.</p>";
+          return;
+        }
+
+        grid.innerHTML = data
+          .map((item, index) => {
+            const spec = item.spec;
+            const isGuitar = spec.numStrings !== undefined;
+            const instrumentLabel = isGuitar ? "Acoustic Guitar" : "Mandolin";
+            const fileName =
+              spec.model.toLowerCase().replace(/\s+/g, "-") + ".png";
+            const dynamicLabel = isGuitar ? "Strings" : "Style";
+            const dynamicValue = isGuitar
+              ? `${spec.numStrings} Strings`
+              : spec.style;
+
+            return `
+            <div class="card" style="animation-delay: ${index * 0.1}s">
+              <div class="type-badge">${instrumentLabel}</div>
+              
+              <div class="img-container">
+                <img src="/images/${fileName}" alt="${spec.model}" 
+                     onerror="this.src='https://via.placeholder.com/400x600/121212/d4af37?text=${spec.model.replace(
+                       /\s+/g,
+                       "+"
+                     )}'">
+              </div>
+
+              <div class="builder">${spec.builder}</div>
+              <h3 class="model">${spec.model}</h3>
+
+              <div class="spec-container">
+                <div class="spec-item">
+                  <span class="spec-label">Top Wood</span>
+                  <span class="spec-value">${spec.topWood}</span>
+                </div>
+                <div class="spec-item">
+                  <span class="spec-label">Back Wood</span>
+                  <span class="spec-value">${spec.backWood}</span>
+                </div>
+                <div class="spec-item">
+                  <span class="spec-label">Body Type</span>
+                  <span class="spec-value">${spec.type}</span>
+                </div>
+                <div class="spec-item">
+                  <span class="spec-label">${dynamicLabel}</span>
+                  <span class="spec-value">${dynamicValue}</span>
+                </div>
+              </div>
+
+              <div class="price">$${item.price.toLocaleString()}</div>
+              
+              <a href="https://wa.me/6282155101047?text=Halo Rick, I am interested in the ${
+                spec.builder
+              } ${spec.model} ($${
+              item.price
+            }). Is this unit available for viewing?" 
+                 class="btn-wa" target="_blank">Inquire Availability</a>
+            </div>
+          `;
+          })
+          .join("");
+      }
+
+      // Initial Load
+      fetchInventory();
+    </script>
+  </body>
+</html>
